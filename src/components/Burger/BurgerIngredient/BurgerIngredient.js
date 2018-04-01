@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import classes from './BurguerIngredient.css';
+import classes from './BurgerIngredient.css';
 
-const BurguerIngredient = (props) => {
+const BurgerIngredient = (props) => {
 
     let ingredient = null;
 
@@ -38,10 +38,10 @@ const BurguerIngredient = (props) => {
     return ingredient;
 }
 
-BurguerIngredient.propTypes = {
+BurgerIngredient.propTypes = {
     type: PropTypes.oneOf(['bread-bottom', 'bread-top', 'meat', 'cheese', 'salad', 'bacon']).isRequired
     // type: PropTypes.string.isRequired
 }
 
-export default BurguerIngredient;
+export default BurgerIngredient;
 

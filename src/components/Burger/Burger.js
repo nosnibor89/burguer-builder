@@ -1,12 +1,12 @@
 import React from 'react'
-import BurguerIngredient from '../Burguer/BurguerIngredient/BurguerIngredient';
+import BurgerIngredient from './/BurgerIngredient/BurgerIngredient';
 import classes from './Burger.css'
 
 const burger = (props) => {
 
     let ingredients = Object.keys(props.ingredients).map(key => {
         return [...Array(props.ingredients[key])].map((_, i) => {
-            return <BurguerIngredient key={key + i} type={key} />
+            return <BurgerIngredient key={key + i} type={key} />
         });
     });
 
@@ -19,9 +19,9 @@ const burger = (props) => {
 
     return (
         <div className={classes.Burger}>
-            <BurguerIngredient type="bread-top" />
+            <BurgerIngredient type="bread-top" />
             {ingredients}
-            <BurguerIngredient type="bread-bottom" />
+            <BurgerIngredient type="bread-bottom" />
         </div>
     );
 }
