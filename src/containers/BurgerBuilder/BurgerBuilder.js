@@ -89,6 +89,10 @@ export default class BurgerBuilder extends Component {
         })
     }
 
+    purchase = () => {
+        alert('purchased')
+    }
+
     render() {
 
         const disabledItems = {...this.state.ingredients};
@@ -103,9 +107,12 @@ export default class BurgerBuilder extends Component {
         return (
             <Auxiliar>
                 {/*{modal}*/}
-                const modal = this.state.modalIsVisible && (
                 <Modal show={this.state.modalIsVisible} onHideModal={this.toggleOrderModal}>
-                    <OrderSummary ingredients={this.state.ingredients} onCancel={this.toggleOrderModal}></OrderSummary>
+                    <OrderSummary
+                        price={this.state.totalPrice}
+                        ingredients={this.state.ingredients}
+                        onPurchaseCancel={this.toggleOrderModal}
+                        onPurchaseContinue={this.purchase}></OrderSummary>
                 </Modal>
                 );
 
