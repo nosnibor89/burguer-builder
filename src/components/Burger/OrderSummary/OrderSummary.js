@@ -4,8 +4,7 @@ import Auxiliar from "../../../hoc/Auxiliar";
 import Button from "../../UI/Button/Button";
 
 
-
-const orderSummary = (props) =>{
+const OrderSummary = (props) => {
 
     const ingredientsSummary = Object.keys(props.ingredients)
         .map((key) => <li key={key}><span style={{textTransform: 'capitalize'}}>{key}</span> : {props.ingredients[key]}</li>)
@@ -28,4 +27,4 @@ const orderSummary = (props) =>{
     )
 };
 
-export default orderSummary;
+export default OrderSummary;
