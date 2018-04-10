@@ -2,7 +2,7 @@ import React from 'react'
 import BurgerIngredient from './/BurgerIngredient/BurgerIngredient';
 import classes from './Burger.css'
 
-const burger = (props) => {
+const Burger = (props) => {
 
     let ingredients = Object.keys(props.ingredients).map(key => {
         return [...Array(props.ingredients[key])].map((_, i) => {
@@ -26,4 +26,4 @@ const burger = (props) => {
     );
 }
 
-export default burger
+export default Burger

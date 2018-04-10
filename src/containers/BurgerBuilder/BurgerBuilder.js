@@ -114,7 +114,6 @@ export default class BurgerBuilder extends Component {
                         onPurchaseCancel={this.toggleOrderModal}
                         onPurchaseContinue={this.purchase}></OrderSummary>
                 </Modal>
-                );
 
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls

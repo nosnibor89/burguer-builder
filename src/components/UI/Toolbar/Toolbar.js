@@ -2,10 +2,11 @@ import React from 'react';
 import classes from './Toolbar.css';
 import Logo from "../Logo/Logo";
 import NavigationItems from "../NavigationItems/NavigationItems";
+import BurgerButton from "../BurgerButton/BurgerButton";
 
-const toolbar = (props) => (
+const Toolbar = (props) => (
     <header className={classes.Toolbar}>
-        <div>Menu</div>
+        <BurgerButton toggle={props.toggleMenu}/>
         <div style={{height: '90%'}}>
             <Logo/>
         </div>
@@ -16,4 +17,4 @@ const toolbar = (props) => (
     </header>
 );
 
-export default toolbar;
+export default Toolbar;

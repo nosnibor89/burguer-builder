@@ -4,7 +4,7 @@ import classes from './Modal.css';
 import Auxiliar from "../../../hoc/Auxiliar";
 import Backdrop from "../Backdrop/Backdrop";
 
-const modal = (props) =>(
+const Modal = (props) =>(
     <Auxiliar>
         <Backdrop show={props.show} onHide={props.onHideModal}></Backdrop>
         <div
@@ -18,4 +18,4 @@ const modal = (props) =>(
     </Auxiliar>
 );
 
-export default modal;
+export default Modal;
