@@ -4,6 +4,7 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
+import Orders from "../../api/orders";
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -12,6 +13,17 @@ const INGREDIENT_PRICES = {
     bacon: 0.6
 };
 
+const initialState = {
+    ingredients: {
+        salad: 0,
+        bacon: 0,
+        cheese: 0,
+        meat: 0,
+    },
+    totalPrice: 4,
+    purchasable: false,
+    modalIsVisible: false,
+};
 
 export default class BurgerBuilder extends Component {
 
@@ -23,17 +35,7 @@ export default class BurgerBuilder extends Component {
     // }
 
 
-    state = {
-        ingredients: {
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0,
-        },
-        totalPrice: 4,
-        purchasable: false,
-        modalIsVisible: false,
-    };
+    state = initialState;
 
 
     calcBurger(type, operation) {
@@ -90,7 +92,15 @@ export default class BurgerBuilder extends Component {
     }
 
     purchase = () => {
-        alert('purchased')
+        Orders.saveOrder({ingredients: this.state.ingredients, price: this.state.totalPrice})
+            .then((res) => {
+                console.log(res);
+                this.setState(initialState);
+            })
+            .catch((err) => {
+                alert('Error with purchase, try again')
+                console.log("error: ", err);
+            });
     }
 
     render() {
