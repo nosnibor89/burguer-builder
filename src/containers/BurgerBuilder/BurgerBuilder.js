@@ -6,6 +6,7 @@ import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Orders from "../../api/orders";
 import Loader from "../../components/UI/Loader/Loader";
+import WithErrorHandler from "../../hoc/WithErrorHandler";
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -27,7 +28,7 @@ const initialState = {
     loading: false,
 };
 
-export default class BurgerBuilder extends Component {
+class BurgerBuilder extends Component {
 
     // constructor(props){
     //     super(props);
@@ -102,9 +103,9 @@ export default class BurgerBuilder extends Component {
                 this.setState(initialState);
             })
             .catch((err) => {
-                this.setState({loading: false})
-                alert('Error with purchase, try again')
+                this.setState({loading: false, modalIsVisible: false})
                 console.log("error: ", err);
+                this.props.onError(err.message);
             });
     }
 
@@ -112,12 +113,6 @@ export default class BurgerBuilder extends Component {
 
         const disabledItems = {...this.state.ingredients};
         Object.keys(disabledItems).forEach((key) => disabledItems[key] = this.state.ingredients[key] <= 0);
-
-        // const modal = this.state.modalIsVisible && (
-        //     <Modal>
-        //         <OrderSummary ingredients={this.state.ingredients}></OrderSummary>
-        //     </Modal>
-        // );
 
         let orderSummary = (
             <OrderSummary
@@ -148,3 +143,6 @@ export default class BurgerBuilder extends Component {
         )
     }
 }
+
+
+export default WithErrorHandler(BurgerBuilder);
