@@ -8,12 +8,12 @@ import Orders from "../../api/orders";
 import Loader from "../../components/UI/Loader/Loader";
 import WithErrorHandler from "../../hoc/WithErrorHandler";
 
-const INGREDIENT_PRICES = {
-    salad: 0.5,
-    cheese: 0.4,
-    meat: 1.3,
-    bacon: 0.6
-};
+// const INGREDIENT_PRICES = {
+//     salad: 0.5,
+//     cheese: 0.4,
+//     meat: 1.3,
+//     bacon: 0.6
+// };
 
 const initialState = {
     ingredients: {
@@ -39,6 +39,22 @@ class BurgerBuilder extends Component {
 
 
     state = initialState;
+    ingredientsPrices = null;
+
+    componentDidMount(){
+        this.isLoading();
+
+        Orders.getIngredients()
+            .then((res) =>{
+                this.ingredientsPrices = res.data
+                this.setState({ loading: false });
+            })
+            .catch((err) => {
+                this.setState({loading: false, modalIsVisible: false})
+                console.log("error: ", err);
+                this.props.onError(err.message);
+            });
+    }
 
 
     calcBurger(type, operation) {
@@ -47,7 +63,7 @@ class BurgerBuilder extends Component {
                 ...prevState.ingredients,
                 [type]: operation === 'add' ? +prevState.ingredients[type] + 1 : +prevState.ingredients[type] - 1
             };
-            const newPrice = operation === 'add' ? +prevState.totalPrice + INGREDIENT_PRICES[type] : +prevState.totalPrice - INGREDIENT_PRICES[type];
+            const newPrice = operation === 'add' ? +prevState.totalPrice + this.ingredientsPrices[type] : +prevState.totalPrice - this.ingredientsPrices[type];
 
             return {
                 ingredients: newIngredients,
@@ -94,8 +110,12 @@ class BurgerBuilder extends Component {
         })
     }
 
+    isLoading(){
+        this.setState({loading: true});
+    }
+
     purchase = () => {
-        this.setState({loading: true})
+        this.isLoading();
 
         Orders.saveOrder({ingredients: this.state.ingredients, price: this.state.totalPrice})
             .then((res) => {
@@ -122,8 +142,25 @@ class BurgerBuilder extends Component {
                 onPurchaseContinue={this.purchase}></OrderSummary>
         );
 
+        let burger = (
+            <Auxiliar>
+                <Burger ingredients={this.state.ingredients} />
+                <BuildControls
+                    onIngredientAdd={this.addIngredientHandler}
+                    onIngredientRemove={this.removeIngredientHandler} disabledControls={disabledItems}
+                    onToggleBurgerOrder={this.toggleOrderModal}
+                    price={this.state.totalPrice}
+                    purchasable={this.state.purchasable}/>
+            </Auxiliar>
+        )
+
         if (this.state.loading){
             orderSummary = <Loader/>
+
+        }
+
+        if(this.state.loading && !this.ingredientsPrices){
+            burger = <Loader/>
         }
 
         return (
@@ -132,13 +169,9 @@ class BurgerBuilder extends Component {
                     {orderSummary}
                 </Modal>
 
-                <Burger ingredients={this.state.ingredients} />
-                <BuildControls
-                    onIngredientAdd={this.addIngredientHandler}
-                    onIngredientRemove={this.removeIngredientHandler} disabledControls={disabledItems}
-                    onToggleBurgerOrder={this.toggleOrderModal}
-                    price={this.state.totalPrice}
-                    purchasable={this.state.purchasable}/>
+                { burger }
+
+
             </Auxiliar>
         )
     }

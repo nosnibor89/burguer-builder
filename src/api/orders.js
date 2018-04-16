@@ -6,8 +6,12 @@ const instance = axios.create({
 });
 
 class Orders {
-    static async saveOrder(order) {
-        await instance.post('/burger-orders.json', order)
+    static saveOrder(order) {
+        return instance.post('/burger-orders.json', order)
+    }
+
+    static getIngredients() {
+        return instance.get('/ingredients.json');
     }
 }
 
