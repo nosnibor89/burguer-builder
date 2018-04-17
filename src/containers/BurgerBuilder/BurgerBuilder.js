@@ -26,6 +26,7 @@ const initialState = {
     purchasable: false,
     modalIsVisible: false,
     loading: false,
+    hasError: false
 };
 
 class BurgerBuilder extends Component {
@@ -50,7 +51,7 @@ class BurgerBuilder extends Component {
                 this.setState({ loading: false });
             })
             .catch((err) => {
-                this.setState({loading: false, modalIsVisible: false})
+                this.setState({loading: false, modalIsVisible: false, hasError: true});
                 console.log("error: ", err);
                 this.props.onError(err.message);
             });
@@ -163,6 +164,10 @@ class BurgerBuilder extends Component {
             burger = <Loader/>
         }
 
+        if(this.state.hasError){
+            burger = <p>Could not load ingredients</p>
+        }
+
         return (
             <Auxiliar>
                 <Modal show={this.state.modalIsVisible} onHideModal={this.toggleOrderModal}>
@@ -170,7 +175,6 @@ class BurgerBuilder extends Component {
                 </Modal>
 
                 { burger }
-
 
             </Auxiliar>
         )
