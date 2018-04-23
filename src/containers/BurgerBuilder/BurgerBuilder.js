@@ -55,6 +55,7 @@ class BurgerBuilder extends Component {
                 console.log("error: ", err);
                 this.props.onError(err.message);
             });
+        console.log(this.props)
     }
 
 
@@ -116,18 +117,30 @@ class BurgerBuilder extends Component {
     }
 
     purchase = () => {
-        this.isLoading();
 
-        Orders.saveOrder({ingredients: this.state.ingredients, price: this.state.totalPrice})
-            .then((res) => {
-                console.log(res);
-                this.setState(initialState);
-            })
-            .catch((err) => {
-                this.setState({loading: false, modalIsVisible: false})
-                console.log("error: ", err);
-                this.props.onError(err.message);
-            });
+        const queryParams = [];
+
+        for(const i in this.state.ingredients){
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
+        }
+
+        this.props.history.push({
+            pathname: '/checkout',
+            search: queryParams.join('&')
+        })
+        // this.isLoading();
+        //
+        // Orders.saveOrder({ingredients: this.state.ingredients, price: this.state.totalPrice})
+        //     .then((res) => {
+        //         console.log(res);
+        //         this.setState(initialState);
+        //     })
+        //     .catch((err) => {
+        //         this.setState({loading: false, modalIsVisible: false})
+        //         console.log("error: ", err);
+        //         this.props.onError(err.message);
+        //     });
+
     }
 
     render() {
