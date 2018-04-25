@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Button from "../../../components/UI/Button/Button";
 import classes from './ContactData.css';
-import Orders from "../../../api/orders";
+import OrdersApi from "../../../api/orders";
 import WithErrorHandler from "../../../hoc/WithErrorHandler";
 import Loader from "../../../components/UI/Loader/Loader";
 
@@ -24,7 +24,7 @@ class ContactData extends Component{
 
         this.setState({loading: true});
 
-        Orders.saveOrder({ingredients: this.props.ingredients, price: this.props.price})
+        OrdersApi.saveOrder({ingredients: this.props.ingredients, price: this.props.price})
             .then((res) => {
                 console.log(res);
                 this.setState({loading: false});

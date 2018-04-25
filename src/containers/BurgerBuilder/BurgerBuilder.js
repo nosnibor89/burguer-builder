@@ -4,7 +4,7 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
-import Orders from "../../api/orders";
+import OrdersApi from "../../api/orders";
 import Loader from "../../components/UI/Loader/Loader";
 import WithErrorHandler from "../../hoc/WithErrorHandler";
 
@@ -45,7 +45,7 @@ class BurgerBuilder extends Component {
     componentDidMount(){
         this.isLoading();
 
-        Orders.getIngredients()
+        OrdersApi.getIngredients()
             .then((res) =>{
                 this.ingredientsPrices = res.data
                 this.setState({ loading: false });
@@ -129,20 +129,7 @@ class BurgerBuilder extends Component {
         this.props.history.push({
             pathname: '/checkout',
             search: queryParams.join('&')
-        })
-        // this.isLoading();
-        //
-        // Orders.saveOrder({ingredients: this.state.ingredients, price: this.state.totalPrice})
-        //     .then((res) => {
-        //         console.log(res);
-        //         this.setState(initialState);
-        //     })
-        //     .catch((err) => {
-        //         this.setState({loading: false, modalIsVisible: false})
-        //         console.log("error: ", err);
-        //         this.props.onError(err.message);
-        //     });
-
+        });
     }
 
     render() {

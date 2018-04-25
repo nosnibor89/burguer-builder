@@ -5,9 +5,13 @@ const instance = axios.create({
     baseURL: 'https://my-recipes-a5503.firebaseio.com'
 });
 
-class Orders {
+class OrdersApi {
     static saveOrder(order) {
         return instance.post('/burger-orders.json', order)
+    }
+
+    static getOrders() {
+        return instance.get('/burger-orders.json');
     }
 
     static getIngredients() {
@@ -15,6 +19,6 @@ class Orders {
     }
 }
 
-export default Orders;
+export default OrdersApi;
 
 
