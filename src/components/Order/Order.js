@@ -1,11 +1,11 @@
 import React from "react";
 import classes from './Order.css';
 
-const Order = (props) => {
+const Order = ({order}) => {
 
     let ingredients = [];
     // Salad (1)
-    const fetchedIngredients = props.order.ingredients;
+    const fetchedIngredients = order.ingredients;
     for (const i in fetchedIngredients) {
         ingredients.push(`${i} (${fetchedIngredients[i]})`);
     }
@@ -15,7 +15,7 @@ const Order = (props) => {
     return (
         <div className={classes.Order}>
             <p>Ingredients: {ingredients}</p>
-            <p>Price: <strong>USD {props.order.price}</strong></p>
+            <p>Price: <strong>USD {order.price}</strong></p>
         </div>
     )
 }

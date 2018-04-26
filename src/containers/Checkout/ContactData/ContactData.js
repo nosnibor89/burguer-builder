@@ -4,6 +4,7 @@ import classes from './ContactData.css';
 import OrdersApi from "../../../api/orders";
 import WithErrorHandler from "../../../hoc/WithErrorHandler";
 import Loader from "../../../components/UI/Loader/Loader";
+import Input from "../../../components/UI/Input/Input";
 
 class ContactData extends Component{
 
@@ -44,10 +45,15 @@ class ContactData extends Component{
             <div className={classes.ContactData}>
             <h4>Enter you contact information</h4>
             <form action="">
-                <input className={classes.Input} type="text" name="name"/>
-                <input className={classes.Input} type="email" name="email"/>
-                <input className={classes.Input} type="text" name="street"/>
-                <input className={classes.Input} type="text" name="street"/>
+                <Input inputtype={'input'} placeholder='Name' type='text' name='name' />
+                <Input inputtype={'input'} placeholder='Email' type='email' name='email' />
+                <Input inputtype={'input'} placeholder='Street' type='text' name='street' />
+                <Input inputtype={'input'} placeholder='Postal' type='text' name='postal' />
+
+                {/*<input className={classes.Input} type="text" name="name"/>*/}
+                {/*<input className={classes.Input} type="email" name="email"/>*/}
+                {/*<input className={classes.Input} type="text" name="street"/>*/}
+                {/*<input className={classes.Input} type="text" name="street"/>*/}
 
                 <Button type="Success" onClick={this.createOrder}>Order</Button>
             </form>
