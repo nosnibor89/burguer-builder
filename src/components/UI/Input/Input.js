@@ -37,7 +37,17 @@ const inputTypes = {
 //     )
 // };
 
-const Input = ({elementType, elementConfig, value}) => {
+const prepareSelectInput = (elementConfig, value, onChange) => {
+    const options = elementConfig.options.map(option => <option key={option.value} value={option.value}> {option.display} </option>);
+
+    return (
+        <select onChange={onChange} className={classes.InputElement} {...elementConfig} value={value}>
+            {options}
+        </select>
+    );
+}
+
+const Input = ({id, elementType, elementConfig, value, onChange}) => {
     let inputElement = null;
     let label = null;
 
@@ -47,13 +57,13 @@ const Input = ({elementType, elementConfig, value}) => {
 
     switch (elementType){
         case  inputTypes.input:
-            inputElement = <input className={classes.InputElement} {...elementConfig}  value={value}/>
+            inputElement = <input key={id} onChange={onChange} className={classes.InputElement} {...elementConfig}  value={value}/>
             break;
         case  inputTypes.textarea:
-            inputElement = <textarea className={classes.InputElement} {...elementConfig} value={value}/>
+            inputElement = <textarea onChange={onChange} className={classes.InputElement} {...elementConfig} value={value}/>
             break;
         case  inputTypes.select:
-            inputElement = <textarea className={classes.InputElement} {...elementConfig} value={value}/>
+            inputElement = prepareSelectInput(elementConfig, value, onChange);
             break;
         default:
             inputElement = <input className={classes.InputElement} {...elementConfig}  value={value}/>
@@ -65,7 +75,7 @@ const Input = ({elementType, elementConfig, value}) => {
             {label}
             {inputElement}
         </div>
-    )
+    );
 };
 
 Input.propTypes = {

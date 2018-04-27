@@ -53,7 +53,7 @@ class ContactData extends Component{
                         display: 'Cheapest'
                     }]
                 },
-                value: '4322234'
+                value: 'cheapest'
             },
 
         },
@@ -81,31 +81,75 @@ class ContactData extends Component{
 
     }
 
+    inputChangedHandler = (event, inputIdentifier) => {
+        console.log(event.target.value);
+        console.log(inputIdentifier);
+
+        const updatedForm = {
+            ...this.state.orderForm
+        };
+
+        const updatedInput = {
+            ...updatedForm[inputIdentifier],
+            value: event.target.value,
+        };
+
+        updatedForm[inputIdentifier] = updatedInput;
+
+        this.setState({orderForm: updatedForm});
+
+    }
+
     render(){
+        // Prepare form inputs
+        const formElementArray = [];
 
-        const contactData = !this.state.loading ? (
+        for(const key in this.state.orderForm){
+            formElementArray.push({
+                id: key,
+                config: this.state.orderForm[key]
+            });
+        }
+
+        const formInputs =  formElementArray.map(formInput =>
+                (
+                    <Input key={formInput.id}
+                    onChange={(event) => this.inputChangedHandler(event, formInput.id)}
+                    elementType={formInput.config.element}
+                    elementConfig={formInput.config.elementConfig}
+                    value={formInput.config.value} />
+                )
+            );
+
+        // Add form inputs into form
+        const form = (
             <div className={classes.ContactData}>
-            <h4>Enter you contact information</h4>
-            <form>
-                <Input elementType={this.state.orderForm.name.element} elementConfig={this.state.orderForm.name.elementConfig} value={this.state.orderForm.name.value} />
-                {/*<Input inputtype={'input'} placeholder='Email' type='email' name='email' />*/}
-                {/*<Input inputtype={'input'} placeholder='Street' type='text' name='street' />*/}
-                {/*<Input inputtype={'input'} placeholder='Postal' type='text' name='postal' />*/}
+                <h4>Enter you contact information</h4>
+                <form>
+                    {/*<Input elementType={this.state.orderForm.name.element} elementConfig={this.state.orderForm.name.elementConfig} value={this.state.orderForm.name.value} />*/}
+                    {/*<Input inputtype={'input'} placeholder='Email' type='email' name='email' />*/}
+                    {/*<Input inputtype={'input'} placeholder='Street' type='text' name='street' />*/}
+                    {/*<Input inputtype={'input'} placeholder='Postal' type='text' name='postal' />*/}
 
-                {/*<Input inputtype={'input'} placeholder='Name' type='text' name='name' />*/}
-                {/*<Input inputtype={'input'} placeholder='Email' type='email' name='email' />*/}
-                {/*<Input inputtype={'input'} placeholder='Street' type='text' name='street' />*/}
-                {/*<Input inputtype={'input'} placeholder='Postal' type='text' name='postal' />*/}
+                    {/*<Input inputtype={'input'} placeholder='Name' type='text' name='name' />*/}
+                    {/*<Input inputtype={'input'} placeholder='Email' type='email' name='email' />*/}
+                    {/*<Input inputtype={'input'} placeholder='Street' type='text' name='street' />*/}
+                    {/*<Input inputtype={'input'} placeholder='Postal' type='text' name='postal' />*/}
 
-                {/*<input className={classes.Input} type="text" name="name"/>*/}
-                {/*<input className={classes.Input} type="email" name="email"/>*/}
-                {/*<input className={classes.Input} type="text" name="street"/>*/}
-                {/*<input className={classes.Input} type="text" name="street"/>*/}
+                    {/*<input className={classes.Input} type="text" name="name"/>*/}
+                    {/*<input className={classes.Input} type="email" name="email"/>*/}
+                    {/*<input className={classes.Input} type="text" name="street"/>*/}
+                    {/*<input className={classes.Input} type="text" name="street"/>*/}
 
-                <Button type="Success" onClick={this.createOrder}>Order</Button>
-            </form>
-        </div>
-        ) : <Loader/>;
+                    {formInputs}
+
+                    <Button type="Success" onClick={this.createOrder}>Order</Button>
+                </form>
+            </div>
+        );
+
+        // Display Loader while loading
+        const contactData = !this.state.loading ? form : <Loader/>;
 
         return (
             contactData
