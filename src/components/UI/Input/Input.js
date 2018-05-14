@@ -37,36 +37,43 @@ const inputTypes = {
 //     )
 // };
 
-const prepareSelectInput = (elementConfig, value, onChange) => {
+const prepareSelectInput = (elementConfig, value, onChange, classesNames) => {
     const options = elementConfig.options.map(option => <option key={option.value} value={option.value}> {option.display} </option>);
 
     return (
-        <select onChange={onChange} className={classes.InputElement} {...elementConfig} value={value}>
+        <select onChange={onChange} className={classesNames} {...elementConfig} value={value}>
             {options}
         </select>
     );
 }
 
-const Input = ({id, elementType, elementConfig, value, onChange}) => {
+const Input = ({id, elementType, elementConfig, value, invalid, touched, validation, onChange}) => {
     let inputElement = null;
     let label = null;
+    const inputClasses = [classes.InputElement]
 
     if(elementConfig.label){
         label = <label>{elementConfig.label}</label>;
     }
 
+    if(invalid && validation && touched){
+        inputClasses.push(classes.Invalid);
+    }
+
+    const classesNames = inputClasses.join(' ');
+
     switch (elementType){
         case  inputTypes.input:
-            inputElement = <input key={id} onChange={onChange} className={classes.InputElement} {...elementConfig}  value={value}/>
+            inputElement = <input key={id} onChange={onChange} className={classesNames} {...elementConfig}  value={value}/>
             break;
         case  inputTypes.textarea:
-            inputElement = <textarea onChange={onChange} className={classes.InputElement} {...elementConfig} value={value}/>
+            inputElement = <textarea onChange={onChange} className={classesNames} {...elementConfig} value={value}/>
             break;
         case  inputTypes.select:
-            inputElement = prepareSelectInput(elementConfig, value, onChange);
+            inputElement = prepareSelectInput(elementConfig, value, onChange, classesNames);
             break;
         default:
-            inputElement = <input className={classes.InputElement} {...elementConfig}  value={value}/>
+            inputElement = <input className={classesNames} {...elementConfig}  value={value}/>
             break;
     }
 
