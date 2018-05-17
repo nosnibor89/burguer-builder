@@ -9,7 +9,7 @@ import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 // import OrdersApi from "../../api/orders";
 import Loader from "../../components/UI/Loader/Loader";
 import WithErrorHandler from "../../hoc/WithErrorHandler";
-import * as actions from '../../store/actions';
+import * as burgerActions from '../../store/actions';
 
 
 // const INGREDIENT_PRICES = {
@@ -29,8 +29,8 @@ const initialState = {
     // totalPrice: 4,
     // purchasable: false,
     modalIsVisible: false,
-    loading: false,
-    hasError: false
+    // loading: false,
+    // hasError: false
 };
 
 class BurgerBuilder extends Component {
@@ -44,9 +44,9 @@ class BurgerBuilder extends Component {
 
 
     state = initialState;
-    ingredientsPrices = null;
+    // ingredientsPrices = null;
 
-    // componentDidMount() {
+    componentDidMount() {
     // this.isLoading();
 
     // OrdersApi.getIngredients()
@@ -60,7 +60,8 @@ class BurgerBuilder extends Component {
     //         this.props.onError(err.message);
     //     });
     // console.log(this.props)
-    // }
+        this.props.initIngredientsPrices();
+    }
 
 
     // calcBurger(type, operation) {
@@ -98,6 +99,10 @@ class BurgerBuilder extends Component {
      */
     isPurchasable(ingredients, minIngredients) {
         let sum = 0;
+
+        if(!ingredients){
+            return false;
+        }
 
         for (const ingName of Object.keys(ingredients)) {
             if (ingredients[ingName] > 0) {
@@ -164,16 +169,15 @@ class BurgerBuilder extends Component {
             </Auxiliar>
         )
 
-        if (this.state.loading) {
+        if (this.props.loading) {
             orderSummary = <Loader />
-
         }
 
-        if (this.state.loading && !this.ingredientsPrices) {
+        if (this.props.loading && !this.ingredientsPrices) {
             burger = <Loader />
         }
 
-        if (this.state.hasError) {
+        if (this.props.hasError) {
             burger = <p>Could not load ingredients</p>
         }
 
@@ -193,11 +197,14 @@ class BurgerBuilder extends Component {
 const mapStateToProps = state => ({
     ingredients: state.ingredients,
     totalPrice: state.totalPrice,
+    hasError: state.hasError,
+    loading: state.loading,
 });
 
 const mapDispatchToProps = dispatch => ({
-    addIngredient: ingName => dispatch({ type: actions.ADD_INGREDIENT, ingredientName: ingName }),
-    removeIngredient: ingName => dispatch({ type: actions.REMOVE_INGREDIENT, ingredientName: ingName }),
+    addIngredient: ingName => dispatch(burgerActions.addIngredient(ingName)),
+    removeIngredient: ingName => dispatch(burgerActions.removeIngredient(ingName)),
+    initIngredientsPrices: () => dispatch(burgerActions.initIngredientsPrices())
 });
 
 

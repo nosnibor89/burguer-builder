@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import Button from "../../../components/UI/Button/Button";
 import classes from './ContactData.css';
-import OrdersApi from "../../../api/orders";
+// import OrdersApi from "../../../api/orders";
 import WithErrorHandler from "../../../hoc/WithErrorHandler";
 import Loader from "../../../components/UI/Loader/Loader";
 import Input from "../../../components/UI/Input/Input";
+import * as orderActions from "../../../store/actions";
 
 class ContactData extends Component{
 
@@ -98,21 +101,23 @@ class ContactData extends Component{
 
         console.log(this.props.ingredients)
 
-        this.setState({loading: true});
+        // this.setState({loading: true});
 
         const formData = this.getFormData();
 
-        OrdersApi.saveOrder({ingredients: this.props.ingredients, price: this.props.price, orderData: formData})
-            .then((res) => {
-                console.log(res);
-                this.setState({loading: false});
-                this.props.history.push('/');
-            })
-            .catch((err) => {
-                this.setState({loading: false});
-                console.log("error: ", err);
-                this.props.onError(err.message);
-            });
+        this.props.tryPurchaceBurger({ingredients: this.props.ingredients, price: this.props.price, formData});
+
+        // OrdersApi.saveOrder({ingredients: this.props.ingredients, price: this.props.price, orderData: formData})
+        //     .then((res) => {
+        //         console.log(res);
+        //         this.setState({loading: false});
+        //         this.props.history.push('/');
+        //     })
+        //     .catch((err) => {
+        //         this.setState({loading: false});
+        //         console.log("error: ", err);
+        //         this.props.onError(err.message);
+        //     });
 
     }
 
@@ -219,7 +224,7 @@ class ContactData extends Component{
         );
 
         // Display Loader while loading
-        const contactData = !this.state.loading ? form : <Loader/>;
+        const contactData = !this.props.loading ? form : <Loader/>;
 
         return (
             contactData
@@ -227,4 +232,12 @@ class ContactData extends Component{
     }
 }
 
-export default  WithErrorHandler(ContactData);
+const mapStateToProps = state => ({
+    loading: state.loading,
+});
+
+const mapDispatchToProps = dispatch => ({
+    tryPurchaceBurger: (orderData) => dispatch(orderActions.tryPurchaceBurger(orderData))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WithErrorHandler(ContactData));

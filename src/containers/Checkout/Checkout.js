@@ -1,6 +1,6 @@
 import  React, { Component } from 'react';
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
-import {Route} from "react-router-dom";
+import {Route, Redirect} from "react-router-dom";
 import ContactData from "./ContactData/ContactData";
 import { connect } from 'react-redux';
 
@@ -48,21 +48,28 @@ class Checkout extends Component {
     }
 
     continueCheckout = () => {
-        console.log(this.props)
+        // console.log(this.props)
         this.props.history.replace({pathname: this.childPath, search: this.props.location.search });
     }
 
     render(){
-        return (
-            <div>
-                <CheckoutSummary
-                    onPurchaseCancel={this.cancelCheckout}
-                    onPurchaseContinue={this.continueCheckout}
-                    ingredients={this.props.ingredients}/>
 
-                <Route path={this.childPath} component={(props) => <ContactData {...props} ingredients={this.props.ingredients} price={this.props.totalPrice}/>}/>
-            </div>
-        )
+        let summary = <Redirect to="/"/>;
+
+        if(this.props.ingredients){
+            summary = (
+                <div>
+                    <CheckoutSummary
+                        onPurchaseCancel={this.cancelCheckout}
+                        onPurchaseContinue={this.continueCheckout}
+                        ingredients={this.props.ingredients}/>
+
+                    <Route path={this.childPath} component={(props) => <ContactData {...props} ingredients={this.props.ingredients} price={this.props.totalPrice}/>}/>
+                </div>
+            )
+        }
+
+        return summary;
     }
 }
 
