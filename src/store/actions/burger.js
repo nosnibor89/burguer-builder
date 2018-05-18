@@ -16,6 +16,7 @@ export const removeIngredient = (ingName) => ({
 export const setIngredientsPrices = (ingredientsPrices) => ({
     type: actionsTypes.SET_INGREDIENTS_PRICES,
     loading: false,
+    ingredients: null,
     ingredientsPrices,
 });
 

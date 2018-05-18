@@ -1,8 +1,10 @@
 import  React, { Component } from 'react';
-import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
 import {Route, Redirect} from "react-router-dom";
-import ContactData from "./ContactData/ContactData";
 import { connect } from 'react-redux';
+
+import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
+import ContactData from "./ContactData/ContactData";
+import * as orderActions from '../../store/actions';
 
 class Checkout extends Component {
 
@@ -27,21 +29,39 @@ class Checkout extends Component {
 
         this.childPath = props.match.path + '/contact-data';
         console.log(props.match.path)
+
+        this.props.purchaseInit();
     }
 
 
 
     // This works but it triggers an extra rendering, so it's better use in the constructor
     // componentDidMount(){
-    //     const query = new URLSearchParams(this.props.location.search);
-    //     const ingredients = {};
-    //
-    //     for (let param of query.entries()){
-    //         ingredients[param[0]] = +param[1]
-    //     }
-    //
-    //     this.setState({ingredients: ingredients});
+        // const query = new URLSearchParams(this.props.location.search);
+        // const ingredients = {};
+        //
+        // for (let param of query.entries()){
+        //     ingredients[param[0]] = +param[1]
+        // }
+        //
+        // this.setState({ingredients: ingredients});
     // }
+
+    /** Test the theory of no lifecycle with redux **/
+    componentWillReceiveProps(props, state){
+        console.log('[componentWillReceiveProps]');
+        console.log(props);
+        console.log(state);
+
+    }
+
+    componentWillUpdate(nextProps, nextState){
+        console.log('[componentWillUpdate]');
+        console.log(nextProps);
+        console.log(nextState);
+    }
+
+    /** Test the theory of no lifecycle with redux **/
 
     cancelCheckout = () => {
         this.props.history.goBack();
@@ -56,7 +76,9 @@ class Checkout extends Component {
 
         let summary = <Redirect to="/"/>;
 
-        if(this.props.ingredients){
+        summary = this.props.purchased ? <Redirect to="/"/> : null;
+
+        if(this.props.ingredients && !this.props.purchased){
             summary = (
                 <div>
                     <CheckoutSummary
@@ -74,8 +96,13 @@ class Checkout extends Component {
 }
 
 const mapStateToProps = state => ({
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice,
+    ingredients: state.burger.ingredients,
+    totalPrice: state.burger.totalPrice,
+    purchased: state.order.purchased,
 });
 
-export default connect(mapStateToProps)(Checkout);
+const mapDispatchToProps = dispatch => ({
+    purchaseInit: () => dispatch(orderActions.purchaseInit()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);

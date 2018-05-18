@@ -105,7 +105,7 @@ class ContactData extends Component{
 
         const formData = this.getFormData();
 
-        this.props.tryPurchaceBurger({ingredients: this.props.ingredients, price: this.props.price, formData});
+        this.props.tryPurchaseBurger({ingredients: this.props.ingredients, price: this.props.price, formData});
 
         // OrdersApi.saveOrder({ingredients: this.props.ingredients, price: this.props.price, orderData: formData})
         //     .then((res) => {
@@ -143,8 +143,8 @@ class ContactData extends Component{
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
-        console.log(event.target.value);
-        console.log(inputIdentifier);
+        // console.log(event.target.value);
+        // console.log(inputIdentifier);
 
         const newValue = event.target.value;
 
@@ -218,7 +218,8 @@ class ContactData extends Component{
 
                     {formInputs}
 
-                    <Button type="Success" disabled={!this.state.formIsValid} onClick={this.createOrder}>Order</Button>
+                    {/*<Button type="Success" disabled={!this.state.formIsValid} onClick={this.createOrder}>Order</Button>*/}
+                    <Button type="Success" disabled={!this.state.formIsValid}>Order</Button>
                 </form>
             </div>
         );
@@ -233,11 +234,11 @@ class ContactData extends Component{
 }
 
 const mapStateToProps = state => ({
-    loading: state.loading,
+    loading: state.order.loading,
 });
 
 const mapDispatchToProps = dispatch => ({
-    tryPurchaceBurger: (orderData) => dispatch(orderActions.tryPurchaceBurger(orderData))
+    tryPurchaseBurger: (orderData) => dispatch(orderActions.tryPurchaseBurger(orderData))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WithErrorHandler(ContactData));

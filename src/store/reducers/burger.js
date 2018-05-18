@@ -21,7 +21,7 @@ const initialState = {
 //     bacon: 0.6,
 // };
 
-const burger = (state = initialState, action) => {
+const burgerReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionsTypes.ADD_INGREDIENT:{
             const currentIngCount = state.ingredients && state.ingredients[action.ingredientName] ? state.ingredients[action.ingredientName] + 1 : 1;
@@ -50,8 +50,9 @@ const burger = (state = initialState, action) => {
             return {
                 ...state,
                 ingredients: {
-                    ...state.ingredients,
+                    ...action.ingredients,
                 },
+                totalPrice: initialState.totalPrice,
                 ingredientsPrices: action.ingredientsPrices,
                 hasError: false,
                 loading: false,
@@ -70,4 +71,4 @@ const burger = (state = initialState, action) => {
     }
 }
 
-export default burger;
+export default burgerReducer;
