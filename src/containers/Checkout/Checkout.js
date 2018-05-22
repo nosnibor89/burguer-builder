@@ -1,68 +1,108 @@
 import  React, { Component } from 'react';
+import {Route, Redirect} from "react-router-dom";
+import { connect } from 'react-redux';
+
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
-import {Route} from "react-router-dom";
 import ContactData from "./ContactData/ContactData";
+import * as orderActions from '../../store/actions';
 
 class Checkout extends Component {
 
     constructor(props){
         super(props);
-        const query = new URLSearchParams(this.props.location.search);
-        const ingredients = {};
-        let price = 0 ;
+        // const query = new URLSearchParams(this.props.location.search);
+        // const ingredients = {};
+        // let price = 0 ;
 
-        for (let param of query.entries()){
-            if(param[0] === 'price'){
-                price = +param[1];
-                continue;
-            }
-            ingredients[param[0]] = +param[1]
-        }
+        // for (let param of query.entries()){
+        //     if(param[0] === 'price'){
+        //         price = +param[1];
+        //         continue;
+        //     }
+        //     ingredients[param[0]] = +param[1]
+        // }
 
-        this.state = {
-            ingredients: ingredients,
-            totalPrice: price,
-        };
+        // this.state = {
+        //     ingredients: ingredients,
+        //     totalPrice: price,
+        // };
 
-        this.childPath = this.props.match.path + '/contact-data';
-        console.log(this.props.match.path)
+        this.childPath = props.match.path + '/contact-data';
+        console.log(props.match.path)
+
+        this.props.purchaseInit();
     }
 
 
 
     // This works but it triggers an extra rendering, so it's better use in the constructor
     // componentDidMount(){
-    //     const query = new URLSearchParams(this.props.location.search);
-    //     const ingredients = {};
-    //
-    //     for (let param of query.entries()){
-    //         ingredients[param[0]] = +param[1]
-    //     }
-    //
-    //     this.setState({ingredients: ingredients});
+        // const query = new URLSearchParams(this.props.location.search);
+        // const ingredients = {};
+        //
+        // for (let param of query.entries()){
+        //     ingredients[param[0]] = +param[1]
+        // }
+        //
+        // this.setState({ingredients: ingredients});
     // }
+
+    /** Test the theory of no lifecycle with redux **/
+    componentWillReceiveProps(props, state){
+        console.log('[componentWillReceiveProps]');
+        console.log(props);
+        console.log(state);
+
+    }
+
+    componentWillUpdate(nextProps, nextState){
+        console.log('[componentWillUpdate]');
+        console.log(nextProps);
+        console.log(nextState);
+    }
+
+    /** Test the theory of no lifecycle with redux **/
 
     cancelCheckout = () => {
         this.props.history.goBack();
     }
 
     continueCheckout = () => {
-        console.log(this.props)
+        // console.log(this.props)
         this.props.history.replace({pathname: this.childPath, search: this.props.location.search });
     }
 
     render(){
-        return (
-            <div>
-                <CheckoutSummary
-                    onPurchaseCancel={this.cancelCheckout}
-                    onPurchaseContinue={this.continueCheckout}
-                    ingredients={this.state.ingredients}/>
 
-                <Route path={this.childPath} component={(props) => <ContactData {...props} ingredients={this.state.ingredients} price={this.state.totalPrice}/>}/>
-            </div>
-        )
+        let summary = <Redirect to="/"/>;
+
+        summary = this.props.purchased ? <Redirect to="/"/> : null;
+
+        if(this.props.ingredients && !this.props.purchased){
+            summary = (
+                <div>
+                    <CheckoutSummary
+                        onPurchaseCancel={this.cancelCheckout}
+                        onPurchaseContinue={this.continueCheckout}
+                        ingredients={this.props.ingredients}/>
+
+                    <Route path={this.childPath} component={(props) => <ContactData {...props} ingredients={this.props.ingredients} price={this.props.totalPrice}/>}/>
+                </div>
+            )
+        }
+
+        return summary;
     }
 }
 
-export default Checkout;
+const mapStateToProps = state => ({
+    ingredients: state.burger.ingredients,
+    totalPrice: state.burger.totalPrice,
+    purchased: state.order.purchased,
+});
+
+const mapDispatchToProps = dispatch => ({
+    purchaseInit: () => dispatch(orderActions.purchaseInit()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);

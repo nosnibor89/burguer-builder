@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+
 import Auxiliar from '../../hoc/Auxiliar';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
-import OrdersApi from "../../api/orders";
+// import OrdersApi from "../../api/orders";
 import Loader from "../../components/UI/Loader/Loader";
 import WithErrorHandler from "../../hoc/WithErrorHandler";
+import * as burgerActions from '../../store/actions';
+
 
 // const INGREDIENT_PRICES = {
 //     salad: 0.5,
@@ -16,17 +20,17 @@ import WithErrorHandler from "../../hoc/WithErrorHandler";
 // };
 
 const initialState = {
-    ingredients: {
-        salad: 0,
-        bacon: 0,
-        cheese: 0,
-        meat: 0,
-    },
-    totalPrice: 4,
-    purchasable: false,
+    // ingredients: {
+    //     salad: 0,
+    //     bacon: 0,
+    //     cheese: 0,
+    //     meat: 0,
+    // },
+    // totalPrice: 4,
+    // purchasable: false,
     modalIsVisible: false,
-    loading: false,
-    hasError: false
+    // loading: false,
+    // hasError: false
 };
 
 class BurgerBuilder extends Component {
@@ -40,63 +44,68 @@ class BurgerBuilder extends Component {
 
 
     state = initialState;
-    ingredientsPrices = null;
+    // ingredientsPrices = null;
 
-    componentDidMount(){
-        this.isLoading();
+    componentDidMount() {
+    // this.isLoading();
 
-        OrdersApi.getIngredients()
-            .then((res) =>{
-                this.ingredientsPrices = res.data
-                this.setState({ loading: false });
-            })
-            .catch((err) => {
-                this.setState({loading: false, modalIsVisible: false, hasError: true});
-                console.log("error: ", err);
-                this.props.onError(err.message);
-            });
-        console.log(this.props)
+    // OrdersApi.getIngredients()
+    //     .then((res) =>{
+    //         this.ingredientsPrices = res.data
+    //         this.setState({ loading: false });
+    //     })
+    //     .catch((err) => {
+    //         this.setState({loading: false, modalIsVisible: false, hasError: true});
+    //         console.log("error: ", err);
+    //         this.props.onError(err.message);
+    //     });
+    // console.log(this.props)
+        this.props.initIngredientsPrices();
     }
 
 
-    calcBurger(type, operation) {
-        this.setState((prevState, props) => {
-            const newIngredients = {
-                ...prevState.ingredients,
-                [type]: operation === 'add' ? +prevState.ingredients[type] + 1 : +prevState.ingredients[type] - 1
-            };
-            const newPrice = operation === 'add' ? +prevState.totalPrice + this.ingredientsPrices[type] : +prevState.totalPrice - this.ingredientsPrices[type];
+    // calcBurger(type, operation) {
+    //     this.setState((prevState, props) => {
+    //         const newIngredients = {
+    //             ...prevState.ingredients,
+    //             [type]: operation === 'add' ? +prevState.ingredients[type] + 1 : +prevState.ingredients[type] - 1
+    //         };
+    //         const newPrice = operation === 'add' ? +prevState.totalPrice + this.ingredientsPrices[type] : +prevState.totalPrice - this.ingredientsPrices[type];
 
-            return {
-                ingredients: newIngredients,
-                totalPrice: newPrice.toFixed(2),
-                purchasable: this.isPurchasable(newIngredients, 2)
-            };
-        });
-    }
+    //         return {
+    //             ingredients: newIngredients,
+    //             totalPrice: newPrice.toFixed(2),
+    //             purchasable: this.isPurchasable(newIngredients, 2)
+    //         };
+    //     });
+    // }
 
 
-    addIngredientHandler = (type) => {
-       this.calcBurger(type, 'add');
-    }
+    // addIngredientHandler = (type) => {
+    //     this.calcBurger(type, 'add');
+    // }
 
-    removeIngredientHandler = (type) => {
-        if(this.state.ingredients[type] <= 0){
-            return;
-        }
-        this.calcBurger(type, 'remove');
-    }
+    // removeIngredientHandler = (type) => {
+    //     if (this.state.ingredients[type] <= 0) {
+    //         return;
+    //     }
+    //     this.calcBurger(type, 'remove');
+    // }
 
     /**
      * Check a burger as purchasable. Depends on the min ingredients given
      * @param ingredients
      * @returns {boolean}
      */
-    isPurchasable(ingredients, minIngredients){
+    isPurchasable(ingredients, minIngredients) {
         let sum = 0;
 
-        for(const ingName of Object.keys(ingredients)){
-            if(ingredients[ingName] > 0){
+        if(!ingredients){
+            return false;
+        }
+
+        for (const ingName of Object.keys(ingredients)) {
+            if (ingredients[ingName] > 0) {
                 sum++;
             }
         }
@@ -106,67 +115,69 @@ class BurgerBuilder extends Component {
 
     toggleOrderModal = () => {
         this.setState((prevState, props) => {
-            return{
+            return {
                 modalIsVisible: !prevState.modalIsVisible
             }
         })
     }
 
-    isLoading(){
-        this.setState({loading: true});
+    isLoading() {
+        this.setState({ loading: true });
     }
 
     purchase = () => {
+        // const queryParams = [];
 
-        const queryParams = [];
+        // for (const i in this.state.ingredients) {
+        //     queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
+        // }
 
-        for(const i in this.state.ingredients){
-            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
-        }
+        // queryParams.push('price=' + this.props.totalPrice);
 
-        queryParams.push('price=' + this.state.totalPrice);
+        // this.props.history.push({
+        //     pathname: '/checkout',
+        //     search: queryParams.join('&')
+        // });
 
         this.props.history.push({
             pathname: '/checkout',
-            search: queryParams.join('&')
         });
     }
 
     render() {
 
-        const disabledItems = {...this.state.ingredients};
-        Object.keys(disabledItems).forEach((key) => disabledItems[key] = this.state.ingredients[key] <= 0);
+        const disabledItems = { ...this.props.ingredients };
+        Object.keys(disabledItems).forEach((key) => disabledItems[key] = this.props.ingredients[key] <= 0);
 
         let orderSummary = (
             <OrderSummary
-                price={this.state.totalPrice}
-                ingredients={this.state.ingredients}
+                price={this.props.totalPrice}
+                ingredients={this.props.ingredients}
                 onPurchaseCancel={this.toggleOrderModal}
                 onPurchaseContinue={this.purchase}></OrderSummary>
         );
 
         let burger = (
             <Auxiliar>
-                <Burger ingredients={this.state.ingredients} />
+                <Burger ingredients={this.props.ingredients} />
                 <BuildControls
-                    onIngredientAdd={this.addIngredientHandler}
-                    onIngredientRemove={this.removeIngredientHandler} disabledControls={disabledItems}
+                    onIngredientAdd={this.props.addIngredient}
+                    onIngredientRemove={this.props.removeIngredient} disabledControls={disabledItems}
                     onToggleBurgerOrder={this.toggleOrderModal}
-                    price={this.state.totalPrice}
-                    purchasable={this.state.purchasable}/>
+                    price={this.props.totalPrice}
+                    purchasable={this.isPurchasable(this.props.ingredients, 2)} />
             </Auxiliar>
         )
 
-        if (this.state.loading){
-            orderSummary = <Loader/>
-
+        if (this.props.loading) {
+            orderSummary = <Loader />
         }
 
-        if(this.state.loading && !this.ingredientsPrices){
-            burger = <Loader/>
+        if (this.props.loading && !this.ingredientsPrices) {
+            burger = <Loader />
         }
 
-        if(this.state.hasError){
+        if (this.props.hasError) {
             burger = <p>Could not load ingredients</p>
         }
 
@@ -176,12 +187,25 @@ class BurgerBuilder extends Component {
                     {orderSummary}
                 </Modal>
 
-                { burger }
+                {burger}
 
             </Auxiliar>
         )
     }
 }
 
+const mapStateToProps = state => ({
+    ingredients: state.burger.ingredients,
+    totalPrice: state.burger.totalPrice,
+    hasError: state.burger.hasError,
+    loading: state.burger.loading,
+});
 
-export default WithErrorHandler(BurgerBuilder);
+const mapDispatchToProps = dispatch => ({
+    addIngredient: ingName => dispatch(burgerActions.addIngredient(ingName)),
+    removeIngredient: ingName => dispatch(burgerActions.removeIngredient(ingName)),
+    initIngredientsPrices: () => dispatch(burgerActions.initIngredientsPrices())
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(WithErrorHandler(BurgerBuilder));
