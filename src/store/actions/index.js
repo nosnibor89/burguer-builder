@@ -7,4 +7,5 @@ export {
 export {
     tryPurchaseBurger,
     purchaseInit,
+    tryFetchOrders,
 } from './order';

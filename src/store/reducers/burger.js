@@ -1,12 +1,7 @@
 import * as actionsTypes from '../actions/actionsTypes';
+import {updateState} from "../reducer";
 
 const initialState = {
-    // ingredients: {
-    //     salad: 0,
-    //     bacon: 0,
-    //     cheese: 0,
-    //     meat: 0,
-    // },
     ingredients: null,
     ingredientsPrices: null,
     totalPrice: 4,
@@ -14,58 +9,46 @@ const initialState = {
     loading: true,
 };
 
-// const INGREDIENT_PRICES = {
-//     salad: 0.5,
-//     cheese: 0.4,
-//     meat: 1.3,
-//     bacon: 0.6,
-// };
+const addIngredient = (state, action) => {
+    const currentIngCount = state.ingredients && state.ingredients[action.ingredientName] ? state.ingredients[action.ingredientName] + 1 : 1;
+    const updatedIngredients =  { ...state.ingredients, [action.ingredientName]: currentIngCount,};
+    const updatedPrice = state.totalPrice + state.ingredientsPrices[action.ingredientName];
+
+    return updateState(state, {ingredients: updatedIngredients, totalPrice: updatedPrice});
+};
+
+const removeIngredient = (state, action) => {
+    const currentIngCount = state.ingredients && state.ingredients[action.ingredientName] && state.ingredients[action.ingredientName] > 0 ? state.ingredients[action.ingredientName] - 1 : 0;
+    const updatedIngredients =  { ...state.ingredients, [action.ingredientName]: currentIngCount,};
+    const updatedPrice = state.totalPrice - state.ingredientsPrices[action.ingredientName];
+
+    return updateState(state, {ingredients: updatedIngredients, totalPrice: updatedPrice});
+};
+
+const setIngredientPrices = (state, action) => {
+    const updatedIngredients =  { ...state.ingredients };
+
+    return updateState(state, {
+        ingredients: updatedIngredients,
+        totalPrice: initialState.totalPrice,
+        ingredientsPrices: action.ingredientsPrices,
+        hasError: false,
+        loading: false,
+    });
+};
+
+const fetchIngredientPricesFailed = (state, action) => {
+    const updatedIngredients =  { ...state.ingredients };
+    return updateState(state, {ingredients: updatedIngredients, hasError: true, loading: false,});
+};
 
 const burgerReducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionsTypes.ADD_INGREDIENT:{
-            const currentIngCount = state.ingredients && state.ingredients[action.ingredientName] ? state.ingredients[action.ingredientName] + 1 : 1;
+        case actionsTypes.ADD_INGREDIENT: return addIngredient(state, action);
+        case actionsTypes.REMOVE_INGREDIENT: return removeIngredient(state, action);
+        case actionsTypes.SET_INGREDIENTS_PRICES: return setIngredientPrices(state, action);
+        case actionsTypes.FETCH_INGREDIENTS_PRICES_FAILED: return fetchIngredientPricesFailed(state, action);
 
-            return {
-                ...state,
-                ingredients: {
-                    ...state.ingredients,
-                    [action.ingredientName]: currentIngCount,
-                },
-                totalPrice: state.totalPrice + state.ingredientsPrices[action.ingredientName],
-            };
-        }
-
-        case actionsTypes.REMOVE_INGREDIENT:
-            const currentIngCount = state.ingredients && state.ingredients[action.ingredientName] && state.ingredients[action.ingredientName] > 0 ? state.ingredients[action.ingredientName] - 1 : 0;
-            return {
-                ...state,
-                ingredients: {
-                    ...state.ingredients,
-                    [action.ingredientName]: currentIngCount,
-                },
-                totalPrice: state.totalPrice - state.ingredientsPrices[action.ingredientName],
-            };
-        case actionsTypes.SET_INGREDIENTS_PRICES:
-            return {
-                ...state,
-                ingredients: {
-                    ...action.ingredients,
-                },
-                totalPrice: initialState.totalPrice,
-                ingredientsPrices: action.ingredientsPrices,
-                hasError: false,
-                loading: false,
-            };
-        case actionsTypes.FETCH_INGREDIENTS_PRICES_FAILED:
-            return {
-                ...state,
-                ingredients: {
-                    ...state.ingredients,
-                },
-                hasError: true,
-                loading: false,
-            };
         default:
             return state;
     }
