@@ -106,19 +106,6 @@ class ContactData extends Component{
         const formData = this.getFormData();
 
         this.props.tryPurchaseBurger({ingredients: this.props.ingredients, price: this.props.price, formData});
-
-        // OrdersApi.saveOrder({ingredients: this.props.ingredients, price: this.props.price, orderData: formData})
-        //     .then((res) => {
-        //         console.log(res);
-        //         this.setState({loading: false});
-        //         this.props.history.push('/');
-        //     })
-        //     .catch((err) => {
-        //         this.setState({loading: false});
-        //         console.log("error: ", err);
-        //         this.props.onError(err.message);
-        //     });
-
     }
 
     checkValidity(value, rules) {
@@ -143,9 +130,6 @@ class ContactData extends Component{
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
-        // console.log(event.target.value);
-        // console.log(inputIdentifier);
-
         const newValue = event.target.value;
 
         const updatedForm = {
