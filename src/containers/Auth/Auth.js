@@ -5,6 +5,7 @@ import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
 import classes from './Auth.css';
 import * as authActions from '../../store/actions';
+import Loader from "../../components/UI/Loader/Loader";
 
 
 class Auth extends Component{
@@ -41,6 +42,7 @@ class Auth extends Component{
             },
         },
         formIsValid: false,
+        isSignUp: true,
     }
 
     checkValidity(value, rules) {
@@ -62,6 +64,10 @@ class Auth extends Component{
         }
 
         return isValid;
+    }
+
+    switchAuthMode = () => {
+        this.setState(prevState => ({ isSignUp: !prevState.isSignUp }));
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
@@ -93,7 +99,7 @@ class Auth extends Component{
 
     submit = (event) => {
         event.preventDefault();
-        this.props.tryAuth(this.state.controls.email.value, this.state.controls.password.value);
+        this.props.tryAuth(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignUp);
     }
 
     render(){
@@ -119,20 +125,41 @@ class Auth extends Component{
             )
         );
 
-        return (
+        let errorMsg = null;
+
+        if(this.props.error){
+            errorMsg = <p>{this.props.error.message}</p>;
+        }
+
+        let auth = (
             <div className={classes.Auth}>
                 <form onSubmit={this.submit}>
                     {formInputs}
-                    <Button type="Success" disabled={!this.state.formIsValid}>Start</Button>
+                    {errorMsg}
+                    <Button type="Success" disabled={!this.state.formIsValid}>{this.state.isSignUp ? 'SignUp': 'SignIn'}</Button>
                 </form>
+
+                <Button type="Link" onClick={this.switchAuthMode} >{!this.state.isSignUp ? 'SignUp': 'SignIn'}</Button>
             </div>
-        )
+        );
+
+        if(this.props.loading){
+            auth = <Loader/>
+        }
+
+
+        return auth;
     }
 }
 
+const mapStatetoProps = state => ({
+    loading: state.auth.loading,
+    error: state.auth.error,
+});
+
 const mapDispatchtoProps = dispatch => ({
-    tryAuth: (username, password) => dispatch(authActions.tryAuth(username, password)),
-})
+    tryAuth: (username, password, signUp) => dispatch(authActions.tryAuth(username, password, signUp)),
+});
 
 
-export default connect(null, mapDispatchtoProps)(Auth);
+export default connect(mapStatetoProps, mapDispatchtoProps)(Auth);

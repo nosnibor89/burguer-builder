@@ -1,14 +1,16 @@
 import * as actionTypes from './actionsTypes';
 import AuthApi from "../../api/auth";
+import {AUTH_LOGOUT} from "./actionsTypes";
 
 
 export const AuthStarted = (username, password) => ({
     type: actionTypes.AUTH_STARTED,
 });
 
-export const AuthSuccess = (data) => ({
+export const AuthSuccess = (idToken,localId) => ({
     type: actionTypes.AUTH_SUCCESS,
-    authData: data,
+    idToken: idToken,
+    userId: localId,
 });
 
 export const AuthFailed = (error) => ({
@@ -16,20 +18,34 @@ export const AuthFailed = (error) => ({
     error: error,
 });
 
+const logOut = () => ({
+    type: AUTH_LOGOUT,
+})
 
-export const tryAuth = (username, password) => {
+const checkAuthTimeout = (expirationTime) => {
+    return dispatch => {
+        setTimeout(() => {
+            dispatch(logOut());
+        }, +expirationTime * 1000)
+    }
+}
+
+
+export const tryAuth = (username, password, signUp = false) => {
     return dispatch => {
         dispatch(AuthStarted());
 
-        AuthApi.getToken({email: username, password})
+        const operation = signUp ? AuthApi.signUp : AuthApi.signIn;
+
+        operation({email: username, password})
             .then(res => {
                 console.log(res);
-                dispatch(AuthSuccess(res.data));
+                dispatch(AuthSuccess(res.data.idToken, res.data.localId));
+                dispatch(checkAuthTimeout(res.data.expiresIn));
             })
             .catch(err => {
                 console.log(err);
-                dispatch(AuthFailed(err));
+                dispatch(AuthFailed(err.response.data.error));
             })
-
     }
 }

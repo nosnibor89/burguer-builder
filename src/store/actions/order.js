@@ -17,11 +17,11 @@ export const purchaseBurgerStarted = () => ({
     loading: true,
 });
 
-export const tryPurchaseBurger = order => {
+export const tryPurchaseBurger = (order,token) => {
     return dispatch => {
         dispatch(purchaseBurgerStarted());
 
-        OrdersApi.saveOrder({ingredients: order.ingredients, price: order.price, orderData: order.formData})
+        OrdersApi.saveOrder({ingredients: order.ingredients, price: order.price, orderData: order.formData}, token)
             .then((res) => {
                 console.log(res.data);
                 dispatch(purchaceBurgerSuccess(res.data.name, order));
@@ -56,11 +56,11 @@ export const fetchOrdersStarted = () => ({
     loading: true,
 });
 
-export const tryFetchOrders = order => {
+export const tryFetchOrders = (token) => {
     return dispatch => {
         dispatch(fetchOrdersStarted());
 
-        OrdersApi.getOrders()
+        OrdersApi.getOrders(token)
             .then((res) => {
                 console.log(res.data);
 
