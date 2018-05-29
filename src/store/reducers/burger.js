@@ -7,6 +7,7 @@ const initialState = {
     totalPrice: 4,
     hasError: false,
     loading: true,
+    building: false,
 };
 
 const addIngredient = (state, action) => {
@@ -14,7 +15,7 @@ const addIngredient = (state, action) => {
     const updatedIngredients =  { ...state.ingredients, [action.ingredientName]: currentIngCount,};
     const updatedPrice = state.totalPrice + state.ingredientsPrices[action.ingredientName];
 
-    return updateState(state, {ingredients: updatedIngredients, totalPrice: updatedPrice});
+    return updateState(state, {ingredients: updatedIngredients, totalPrice: updatedPrice, building: true });
 };
 
 const removeIngredient = (state, action) => {
@@ -34,6 +35,7 @@ const setIngredientPrices = (state, action) => {
         ingredientsPrices: action.ingredientsPrices,
         hasError: false,
         loading: false,
+        building: false,
     });
 };
 
