@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import Button from "../../../components/UI/Button/Button";
 import classes from './ContactData.css';
-// import OrdersApi from "../../../api/orders";
 import WithErrorHandler from "../../../hoc/WithErrorHandler";
 import Loader from "../../../components/UI/Loader/Loader";
 import Input from "../../../components/UI/Input/Input";
@@ -77,9 +76,6 @@ class ContactData extends Component{
                     }]
                 },
                 value: 'cheapest',
-                // validation: {
-                //     required: true,
-                // }
             },
 
         },
@@ -103,7 +99,7 @@ class ContactData extends Component{
 
         const formData = this.getFormData();
 
-        this.props.tryPurchaseBurger({ingredients: this.props.ingredients, price: this.props.price, formData}, this.props.token);
+        this.props.tryPurchaseBurger({ingredients: this.props.ingredients, price: this.props.price, userId: this.props.userId, formData}, this.props.token);
     }
 
     checkValidity(value, rules) {
@@ -183,24 +179,7 @@ class ContactData extends Component{
             <div className={classes.ContactData}>
                 <h4>Enter you contact information</h4>
                 <form onSubmit={this.createOrder}>
-                    {/*<Input elementType={this.state.orderForm.name.element} elementConfig={this.state.orderForm.name.elementConfig} value={this.state.orderForm.name.value} />*/}
-                    {/*<Input inputtype={'input'} placeholder='Email' type='email' name='email' />*/}
-                    {/*<Input inputtype={'input'} placeholder='Street' type='text' name='street' />*/}
-                    {/*<Input inputtype={'input'} placeholder='Postal' type='text' name='postal' />*/}
-
-                    {/*<Input inputtype={'input'} placeholder='Name' type='text' name='name' />*/}
-                    {/*<Input inputtype={'input'} placeholder='Email' type='email' name='email' />*/}
-                    {/*<Input inputtype={'input'} placeholder='Street' type='text' name='street' />*/}
-                    {/*<Input inputtype={'input'} placeholder='Postal' type='text' name='postal' />*/}
-
-                    {/*<input className={classes.Input} type="text" name="name"/>*/}
-                    {/*<input className={classes.Input} type="email" name="email"/>*/}
-                    {/*<input className={classes.Input} type="text" name="street"/>*/}
-                    {/*<input className={classes.Input} type="text" name="street"/>*/}
-
                     {formInputs}
-
-                    {/*<Button type="Success" disabled={!this.state.formIsValid} onClick={this.createOrder}>Order</Button>*/}
                     <Button type="Success" disabled={!this.state.formIsValid}>Order</Button>
                 </form>
             </div>
@@ -218,6 +197,7 @@ class ContactData extends Component{
 const mapStateToProps = state => ({
     loading: state.order.loading,
     token: state.auth.token,
+    userId: state.auth.userId,
 });
 
 const mapDispatchToProps = dispatch => ({

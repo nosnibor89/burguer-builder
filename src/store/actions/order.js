@@ -21,7 +21,7 @@ export const tryPurchaseBurger = (order,token) => {
     return dispatch => {
         dispatch(purchaseBurgerStarted());
 
-        OrdersApi.saveOrder({ingredients: order.ingredients, price: order.price, orderData: order.formData}, token)
+        OrdersApi.saveOrder({ingredients: order.ingredients, price: order.price, orderData: order.formData, userId: order.userId }, token)
             .then((res) => {
                 console.log(res.data);
                 dispatch(purchaceBurgerSuccess(res.data.name, order));
@@ -56,11 +56,12 @@ export const fetchOrdersStarted = () => ({
     loading: true,
 });
 
-export const tryFetchOrders = (token) => {
+export const tryFetchOrders = (token, userId) => {
     return dispatch => {
         dispatch(fetchOrdersStarted());
 
-        OrdersApi.getOrders(token)
+        const queryParams = `orderBy="userId"&equalTo="${userId}"`;
+        OrdersApi.getOrders(token, queryParams)
             .then((res) => {
                 console.log(res.data);
 

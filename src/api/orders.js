@@ -5,8 +5,8 @@ class OrdersApi {
         return axios.post(`/burger-orders.json?auth=${token}`, order);
     }
 
-    static getOrders(token) {
-        return axios.get(`/burger-orders.json?auth=${token}`);
+    static getOrders(token, params) {
+        return axios.get(`/burger-orders.json?auth=${token}&${params}`);
     }
 
     static getIngredients() {
