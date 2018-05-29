@@ -1,21 +1,16 @@
-import axios from 'axios';
-
-
-const instance = axios.create({
-    baseURL: 'https://my-recipes-a5503.firebaseio.com'
-});
+import axios from './axios';
 
 class OrdersApi {
-    static saveOrder(order) {
-        return instance.post('/burger-orders.json', order)
+    static saveOrder(order, token) {
+        return axios.post(`/burger-orders.json?auth=${token}`, order);
     }
 
-    static getOrders() {
-        return instance.get('/burger-orders.json');
+    static getOrders(token, params) {
+        return axios.get(`/burger-orders.json?auth=${token}&${params}`);
     }
 
     static getIngredients() {
-        return instance.get('/ingredients.json');
+        return axios.get('/ingredients.json');
     }
 }
 

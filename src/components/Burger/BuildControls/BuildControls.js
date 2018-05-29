@@ -10,6 +10,13 @@ var controls = [
 ];
 
 const BuildControls = (props) => {
+
+    const button = (
+        <button disabled={!props.purchasable && props.isAuth} className={classes.OrderButton} onClick={props.onToggleBurgerOrder}>
+            {props.isAuth ? 'Order now' : 'Sign up to order'}
+        </button>
+    );
+
     return (
         <div className={classes.BuildControls}>
             <p>Current Price: <strong>{props.price}</strong></p>
@@ -17,9 +24,9 @@ const BuildControls = (props) => {
                 onLessClick={() => props.onIngredientRemove(control.type)}
                 onMoreClick={() => props.onIngredientAdd(control.type)}
                 disabled={props.disabledControls[control.type]}
-                key={control.label} 
+                key={control.label}
                 label={control.label}/>)}
-             <button disabled={!props.purchasable} className={classes.OrderButton} onClick={props.onToggleBurgerOrder}>Order now</button>
+            {button}
         </div>
     )
 }
