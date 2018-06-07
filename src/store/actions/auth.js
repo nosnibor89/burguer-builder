@@ -65,8 +65,6 @@ export const tryAuth = (username, password, signUp = false) => {
 
         operation({email: username, password})
             .then(res => {
-                console.log(res);
-
                 const idToken = res.data.idToken;
                 const expirationDate = new Date(new Date().getTime() + +res.data.expiresIn * 1000);
                 const userId = res.data.localId;
@@ -79,7 +77,6 @@ export const tryAuth = (username, password, signUp = false) => {
                 dispatch(checkAuthTimeout(res.data.expiresIn));
             })
             .catch(err => {
-                console.log(err);
                 dispatch(AuthFailed(err.response.data.error));
             })
     }

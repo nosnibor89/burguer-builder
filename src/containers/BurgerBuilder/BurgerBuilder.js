@@ -14,7 +14,7 @@ const initialState = {
     modalIsVisible: false,
 };
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
     state = initialState;
 
     componentDidMount() {

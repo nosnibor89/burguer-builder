@@ -23,7 +23,7 @@ const orderReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionsTypes.PURCHASE_BURGER_SUCCESS: return purchaseBurgerSuccess(state, action);
         case actionsTypes.PURCHASE_BURGER_FAILED: return updateState(state, { error: action.error, loading: false,});
-        case actionsTypes.PURCHASE_BURGER_STARTED: return updateState(state, {loading: action.loading,});
+        case actionsTypes.PURCHASE_BURGER_STARTED: return updateState(state, {loading: true,});
         case actionsTypes.PURCHASE_BURGER_INIT: return updateState(state, {purchased: false,});
         case actionsTypes.FETCH_ORDERS_STARTED: return updateState(state, {loading: true,});
         case actionsTypes.FETCH_ORDERS_SUCCESS: return updateState(state, { orders: [...action.orders], loading: false,});

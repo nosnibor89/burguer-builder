@@ -23,6 +23,7 @@ const authFailed = (state, action) => {
     return updateState(state, {loading: false, error: action.error});
 }
 
+
 const authLogout = (state, action) => {
     return updateState(state, {token: null, userId: null});
 }

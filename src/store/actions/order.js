@@ -14,7 +14,6 @@ export const purchaseBurgerFailed = error => ({
 
 export const purchaseBurgerStarted = () => ({
     type: actionTypes.PURCHASE_BURGER_STARTED,
-    loading: true,
 });
 
 export const tryPurchaseBurger = (order,token) => {
@@ -23,13 +22,10 @@ export const tryPurchaseBurger = (order,token) => {
 
         OrdersApi.saveOrder({ingredients: order.ingredients, price: order.price, orderData: order.formData, userId: order.userId }, token)
             .then((res) => {
-                console.log(res.data);
                 dispatch(purchaceBurgerSuccess(res.data.name, order));
             })
             .catch((err) => {
                 dispatch(purchaseBurgerFailed(err));
-                console.log("error: ", err);
-                // this.props.onError(err.message);
             });
     }
 }
@@ -63,13 +59,9 @@ export const tryFetchOrders = (token, userId) => {
         const queryParams = `orderBy="userId"&equalTo="${userId}"`;
         OrdersApi.getOrders(token, queryParams)
             .then((res) => {
-                console.log(res.data);
-
                 dispatch(fetchOrdersSuccess(prepareOrders(res.data)));
             })
             .catch((err) => {
-                console.log(err);
-
                 dispatch(fetchOrdersFailed(err));
             });
     }

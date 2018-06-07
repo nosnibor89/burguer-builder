@@ -7,6 +7,7 @@ import Button from "../../components/UI/Button/Button";
 import classes from './Auth.css';
 import * as authActions from '../../store/actions';
 import Loader from "../../components/UI/Loader/Loader";
+import {checkValidity, updateObject} from "../../shared/util";
 
 
 class Auth extends Component{
@@ -52,15 +53,6 @@ class Auth extends Component{
         }
     }
 
-    checkValidity(value, rules) {
-        let isValid = true;
-        if(rules && rules.required){
-            isValid = value.trim() !== '' && isValid;
-        }
-
-        return isValid;
-    }
-
     isValidForm(form) {
         let isValid = true;
         for (const i in form){
@@ -79,29 +71,19 @@ class Auth extends Component{
 
     inputChangedHandler = (event, inputIdentifier) => {
         const newValue = event.target.value;
+        const hasValidation = this.state.controls[inputIdentifier].validation;
 
-        const updatedForm = {
-            ...this.state.controls
-        };
-
-        const updatedInput = {
-            ...updatedForm[inputIdentifier],
-            value: newValue,
-        };
-
-        //Update validation settings
-        if(updatedForm[inputIdentifier].validation){
-            updatedInput.valid = this.checkValidity(newValue, updatedForm[inputIdentifier].validation);
-            updatedInput.touched = true;
-        }
-
-
-        updatedForm[inputIdentifier] = updatedInput;
+        const updatedForm = updateObject(this.state.controls, {
+            [inputIdentifier]: updateObject(this.state.controls[inputIdentifier], {
+                value: newValue,
+                valid: hasValidation ? checkValidity(newValue, this.state.controls[inputIdentifier].validation) : false,
+                touched: hasValidation ? true : false,
+            }),
+        });
 
         const formIsValid = this.isValidForm(updatedForm);
 
         this.setState({controls: updatedForm, formIsValid: formIsValid});
-
     }
 
     submit = (event) => {
