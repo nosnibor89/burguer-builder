@@ -11,24 +11,22 @@ class Checkout extends Component {
     constructor(props){
         super(props);
         this.childPath = props.match.path + '/contact-data';
-        console.log(props.match.path)
-
         this.props.purchaseInit();
     }
 
     /** Test the theory of no lifecycle with redux **/
-    componentWillReceiveProps(props, state){
-        console.log('[componentWillReceiveProps]');
-        console.log(props);
-        console.log(state);
+    // componentWillReceiveProps(props, state){
+    //     console.log('[componentWillReceiveProps]');
+    //     console.log(props);
+    //     console.log(state);
+    //
+    // }
 
-    }
-
-    componentWillUpdate(nextProps, nextState){
-        console.log('[componentWillUpdate]');
-        console.log(nextProps);
-        console.log(nextState);
-    }
+    // componentWillUpdate(nextProps, nextState){
+    //     console.log('[componentWillUpdate]');
+    //     console.log(nextProps);
+    //     console.log(nextState);
+    // }
 
     /** Test the theory of no lifecycle with redux **/
 

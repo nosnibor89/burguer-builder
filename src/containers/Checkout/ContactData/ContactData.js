@@ -7,6 +7,7 @@ import WithErrorHandler from "../../../hoc/WithErrorHandler";
 import Loader from "../../../components/UI/Loader/Loader";
 import Input from "../../../components/UI/Input/Input";
 import * as orderActions from "../../../store/actions";
+import {checkValidity, updateObject} from "../../../shared/util";
 
 class ContactData extends Component{
 
@@ -94,21 +95,9 @@ class ContactData extends Component{
 
     createOrder = (event) => {
         event.preventDefault();
-
-        console.log(this.props.ingredients)
-
         const formData = this.getFormData();
 
         this.props.tryPurchaseBurger({ingredients: this.props.ingredients, price: this.props.price, userId: this.props.userId, formData}, this.props.token);
-    }
-
-    checkValidity(value, rules) {
-        let isValid = true;
-        if(rules && rules.required){
-            isValid = value.trim() !== '' && isValid;
-        }
-
-        return isValid;
     }
 
     isValidForm(form) {
@@ -125,24 +114,15 @@ class ContactData extends Component{
 
     inputChangedHandler = (event, inputIdentifier) => {
         const newValue = event.target.value;
+        const hasValidation = this.state.orderForm[inputIdentifier].validation;
 
-        const updatedForm = {
-            ...this.state.orderForm
-        };
-
-        const updatedInput = {
-            ...updatedForm[inputIdentifier],
+        const updatedInput = updateObject(this.state.orderForm[inputIdentifier], {
             value: newValue,
-        };
+            valid: hasValidation ? checkValidity(newValue, this.state.orderForm[inputIdentifier].validation) : false,
+            touched: hasValidation ? true : false,
+        });
 
-        //Update validation settings
-        if(updatedForm[inputIdentifier].validation){
-            updatedInput.valid = this.checkValidity(newValue, updatedForm[inputIdentifier].validation);
-            updatedInput.touched = true;
-        }
-
-
-        updatedForm[inputIdentifier] = updatedInput;
+        const updatedForm = updateObject(this.state.orderForm, {[inputIdentifier]: updatedInput});
 
         const formIsValid = this.isValidForm(updatedForm);
 
