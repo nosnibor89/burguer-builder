@@ -2,6 +2,8 @@ export {
     addIngredient,
     removeIngredient,
     initIngredientsPrices,
+    setIngredientsPrices,
+    fetchIngredientsPricesFailed
 } from './burger';
 
 export {
