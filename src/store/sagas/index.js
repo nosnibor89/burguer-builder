@@ -10,15 +10,13 @@ export function* watchAuth() {
     yield takeEvery(actionTypes.AUTH_CHECK_TIMEOUT, checkAuthTimeoutSaga);
     yield takeEvery(actionTypes.AUTH_EFFECT_STARTED, tryAuthSaga);
     yield takeEvery(actionTypes.AUTH_CHECK_EFFECT_STARTED, authCheckStateSaga);
-
-    yield takeEvery(actionTypes.FETCH_ORDERS_EFFECT_STARTED, tryFetchOrdersSaga );
-    yield takeEvery(actionTypes.PURCHASE_BURGER_EFFECT_STARTED, tryPurchaseBurgerSaga);
-
-    yield takeEvery(actionTypes.FETCH_INGREDIENTS_PRICES_EFFECT, initIngredientsPricesSaga);
-
 }
 
-// export function* watchOrder() {
-//     yield takeEvery(actionTypes.FETCH_ORDERS_EFFECT_STARTED, tryFetchOrdersSaga );
-// }
+export function* watchOrder() {
+    yield takeEvery(actionTypes.FETCH_ORDERS_EFFECT_STARTED, tryFetchOrdersSaga );
+    yield takeEvery(actionTypes.PURCHASE_BURGER_EFFECT_STARTED, tryPurchaseBurgerSaga);
+}
 
+export function* watchBurger() {
+    yield takeEvery(actionTypes.FETCH_INGREDIENTS_PRICES_EFFECT, initIngredientsPricesSaga);
+}
