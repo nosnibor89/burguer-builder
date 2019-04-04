@@ -1,6 +1,6 @@
 import * as actionTypes from './actionsTypes';
 
-export const authStarted = () => ({
+export const AuthStarted = () => ({
     type: actionTypes.AUTH_STARTED,
 });
 

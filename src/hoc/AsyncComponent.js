@@ -1,3 +1,6 @@
+/**
+ * File not in use as we have `React.lazy`
+ */
 import React, { Component } from "react";
 
 
