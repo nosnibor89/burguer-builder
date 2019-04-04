@@ -1,5 +1,4 @@
 import * as actionTypes from './actionsTypes';
-import OrdersApi from "../../api/orders";
 
 export const purchaceBurgerSuccess = (orderId, orderData) => ({
     type: actionTypes.PURCHASE_BURGER_SUCCESS,
@@ -16,24 +15,15 @@ export const purchaseBurgerStarted = () => ({
     type: actionTypes.PURCHASE_BURGER_STARTED,
 });
 
-export const tryPurchaseBurger = (order,token) => {
-    return dispatch => {
-        dispatch(purchaseBurgerStarted());
-
-        OrdersApi.saveOrder({ingredients: order.ingredients, price: order.price, orderData: order.formData, userId: order.userId }, token)
-            .then((res) => {
-                dispatch(purchaceBurgerSuccess(res.data.name, order));
-            })
-            .catch((err) => {
-                dispatch(purchaseBurgerFailed(err));
-            });
-    }
-}
+export const tryPurchaseBurger = (order,token) => ({
+    type: actionTypes.PURCHASE_BURGER_EFFECT_STARTED,
+    order,
+    token,
+});
 
 export const purchaseInit = () => ({
     type: actionTypes.PURCHASE_BURGER_INIT,
 });
-
 
 export const fetchOrdersSuccess = (orders) => ({
     type: actionTypes.FETCH_ORDERS_SUCCESS,
@@ -52,30 +42,9 @@ export const fetchOrdersStarted = () => ({
     loading: true,
 });
 
-export const tryFetchOrders = (token, userId) => {
-    return dispatch => {
-        dispatch(fetchOrdersStarted());
+export const tryFetchOrders = (token, userId) => ({
+    type: actionTypes.FETCH_ORDERS_EFFECT_STARTED,
+    token,
+    userId,
+});
 
-        const queryParams = `orderBy="userId"&equalTo="${userId}"`;
-        OrdersApi.getOrders(token, queryParams)
-            .then((res) => {
-                dispatch(fetchOrdersSuccess(prepareOrders(res.data)));
-            })
-            .catch((err) => {
-                dispatch(fetchOrdersFailed(err));
-            });
-    }
-}
-
-function prepareOrders(data) {
-    const orders = [];
-    for (const i in data){
-        const order = {
-            ...data[i],
-            id : i
-        };
-
-        orders.push(order);
-    }
-    return orders;
-}
