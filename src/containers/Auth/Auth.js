@@ -8,6 +8,7 @@ import classes from './Auth.css';
 import * as authActions from '../../store/actions';
 import Loader from "../../components/UI/Loader/Loader";
 import {checkValidity, updateObject} from "../../shared/util";
+import WithErrorHandler from '../../hoc/WithErrorHandler';
 
 
 class Auth extends Component{
@@ -160,4 +161,4 @@ const mapDispatchtoProps = dispatch => ({
 });
 
 
-export default connect(mapStatetoProps, mapDispatchtoProps)(Auth);
+export default connect(mapStatetoProps, mapDispatchtoProps)(WithErrorHandler(Auth));

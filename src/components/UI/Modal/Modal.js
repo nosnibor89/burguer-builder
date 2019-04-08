@@ -11,7 +11,6 @@ class Modal extends Component{
     }
 
     render() {
-
         return (
             <Auxiliar>
                 <Backdrop show={this.props.show} onHide={this.props.onHideModal}></Backdrop>

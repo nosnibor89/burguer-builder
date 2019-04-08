@@ -1,74 +1,66 @@
-import  React, { Component } from 'react';
-import {Route, Redirect} from "react-router-dom";
-import { connect } from 'react-redux';
+import React from "react";
+import { Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
 import ContactData from "./ContactData/ContactData";
-import * as orderActions from '../../store/actions';
+import * as orderActions from "../../store/actions";
 
-class Checkout extends Component {
+const Checkout = props => {
+  const childPath = props.match.path + "/contact-data";
+  props.purchaseInit();
 
-    constructor(props){
-        super(props);
-        this.childPath = props.match.path + '/contact-data';
-        this.props.purchaseInit();
-    }
+  const cancelCheckout = () => {
+    props.history.goBack();
+  };
 
-    /** Test the theory of no lifecycle with redux **/
-    // componentWillReceiveProps(props, state){
-    //     console.log('[componentWillReceiveProps]');
-    //     console.log(props);
-    //     console.log(state);
-    //
-    // }
+  const continueCheckout = () => {
+    props.history.replace({
+      pathname: childPath,
+      search: props.location.search
+    });
+  };
 
-    // componentWillUpdate(nextProps, nextState){
-    //     console.log('[componentWillUpdate]');
-    //     console.log(nextProps);
-    //     console.log(nextState);
-    // }
+  let summary = <Redirect to="/" />;
 
-    /** Test the theory of no lifecycle with redux **/
+  summary = props.purchased ? <Redirect to="/" /> : null;
 
-    cancelCheckout = () => {
-        this.props.history.goBack();
-    }
+  if (props.ingredients && !props.purchased) {
+    summary = (
+      <div>
+        <CheckoutSummary
+          onPurchaseCancel={cancelCheckout}
+          onPurchaseContinue={continueCheckout}
+          ingredients={props.ingredients}
+        />
 
-    continueCheckout = () => {
-        this.props.history.replace({pathname: this.childPath, search: this.props.location.search });
-    }
+        <Route
+          path={childPath}
+          component={props => (
+            <ContactData
+              {...props}
+              ingredients={props.ingredients}
+              price={props.totalPrice}
+            />
+          )}
+        />
+      </div>
+    );
+  }
 
-    render(){
-
-        let summary = <Redirect to="/"/>;
-
-        summary = this.props.purchased ? <Redirect to="/"/> : null;
-
-        if(this.props.ingredients && !this.props.purchased){
-            summary = (
-                <div>
-                    <CheckoutSummary
-                        onPurchaseCancel={this.cancelCheckout}
-                        onPurchaseContinue={this.continueCheckout}
-                        ingredients={this.props.ingredients}/>
-
-                    <Route path={this.childPath} component={(props) => <ContactData {...props} ingredients={this.props.ingredients} price={this.props.totalPrice}/>}/>
-                </div>
-            )
-        }
-
-        return summary;
-    }
-}
-
+  return summary;
+};
 const mapStateToProps = state => ({
-    ingredients: state.burger.ingredients,
-    totalPrice: state.burger.totalPrice,
-    purchased: state.order.purchased,
+  ingredients: state.burger.ingredients,
+  totalPrice: state.burger.totalPrice,
+  purchased: state.order.purchased
 });
 
 const mapDispatchToProps = dispatch => ({
-    purchaseInit: () => dispatch(orderActions.purchaseInit()),
+  purchaseInit: () => dispatch(orderActions.purchaseInit())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Checkout);

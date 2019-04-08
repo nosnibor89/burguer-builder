@@ -1,32 +1,28 @@
-import React, {Component} from "react";
+import React, { useState } from "react";
 import Auxiliar from "./Auxiliar";
 import Modal from "../components/UI/Modal/Modal";
 
+const WithErrorHandler = ChildComponent => {
+  return props => {
+    const [error, setError] = useState(null);
 
-const WithErrorHandler = (ChildComponent) => {
-    return class extends Component {
+    const handleError = currentError => {
+      setError(currentError);
+    };
 
-        state = { error: null }
+    const toggleModal = () => {
+      setError(null);
+    };
 
-        handleError = (error) => {
-            this.setState({error: error});
-        }
-
-        toggleModal = () => {
-            this.setState({error: null});
-        }
-
-        render(){
-            return (
-                <Auxiliar>
-                    <Modal show={this.state.error} onHideModal={this.toggleModal}>
-                        { this.state.error ? this.state.error : null }
-                    </Modal>
-                    <ChildComponent {...this.props} onError={(error) => this.handleError(error)}/>
-                </Auxiliar>
-            );
-        }
-    }
-}
+    return (
+      <Auxiliar>
+        <Modal show={error} onHideModal={toggleModal}>
+          {error ? error : null}
+        </Modal>
+        <ChildComponent {...props} onError={error => handleError(error)} />
+      </Auxiliar>
+    );
+  };
+};
 
 export default WithErrorHandler;

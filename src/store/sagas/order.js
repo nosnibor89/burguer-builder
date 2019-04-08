@@ -13,7 +13,7 @@ export function* tryFetchOrdersSaga(action){
             yield put(actions.fetchOrdersSuccess(prepareOrders(res.data)));
 
         }catch (err) {
-            yield put(actions.fetchOrdersFailed(err));
+            yield put(actions.fetchOrdersFailed(`error fething orders: ${err}`));
         }
 
 }

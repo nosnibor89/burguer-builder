@@ -15,5 +15,3 @@ class OrdersApi {
 }
 
 export default OrdersApi;
-
-
