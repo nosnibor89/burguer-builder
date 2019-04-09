@@ -33,16 +33,16 @@ const Checkout = props => {
           onPurchaseContinue={continueCheckout}
           ingredients={props.ingredients}
         />
-
         <Route
           path={childPath}
-          component={props => (
+          component={routeProps => {
+            return (
             <ContactData
-              {...props}
+              {...routeProps}
               ingredients={props.ingredients}
               price={props.totalPrice}
             />
-          )}
+          )}}
         />
       </div>
     );
