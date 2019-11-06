@@ -1,42 +1,48 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import Order from "../../components/Order/Order";
-// import OrdersApi from "../../api/orders";
-import {Loader} from "../../components/UI/Loader/Loader";
+import { Loader } from "../../components/UI/Loader/Loader";
 import WithErrorHandler from "../../hoc/WithErrorHandler";
-import {tryFetchOrders} from "../../store/actions";
+import { tryFetchOrders } from "../../store/actions";
 
-class  Orders extends Component{
-    componentDidMount(){
-        this.props.fetchOrders(this.props.token, this.props.userId);
+const Orders = props => {
+  // Fetch orders
+  useEffect(() => {
+    props.fetchOrders(props.token, props.userId);
+  }, []);
+
+  //Check error
+  useEffect(() => {
+    const { error, onError } = props;
+    if (error) {
+      onError(error);
     }
+  }, [props.error]);
 
-    render(){
-        let orders =  this.props.orders.map((order) => <Order key={order.id} order={order} />);
+  let orders = props.orders.map(order => (
+    <Order key={order.id} order={order} />
+  ));
 
-        if(this.props.loading){
-            orders = <Loader/>
-        }
+  if (props.loading) {
+    orders = <Loader />;
+  }
 
-        return (
-            <div>
-                {orders}
-            </div>
-        );
-    }
-}
-
+  return <div>{orders}</div>;
+};
 
 const mapStateToProps = state => ({
-    orders: state.order.orders,
-    loading: state.order.loading,
-    token: state.auth.token,
-    userId: state.auth.userId,
+  orders: state.order.orders,
+  loading: state.order.loading,
+  token: state.auth.token,
+  userId: state.auth.userId,
+  error: state.order.error
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchOrders: (token, userId) => dispatch(tryFetchOrders(token, userId)),
+  fetchOrders: (token, userId) => dispatch(tryFetchOrders(token, userId))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WithErrorHandler(Orders));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WithErrorHandler(Orders));

@@ -40,7 +40,6 @@ const BurgerIngredient = (props) => {
 
 BurgerIngredient.propTypes = {
     type: PropTypes.oneOf(['bread-bottom', 'bread-top', 'meat', 'cheese', 'salad', 'bacon']).isRequired
-    // type: PropTypes.string.isRequired
 }
 
 export default BurgerIngredient;
